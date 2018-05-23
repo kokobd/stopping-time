@@ -1,0 +1,5 @@
+client/node_modules/
+
+server/.stack-work/
+server/stopping-time-server.cabal
+*~
