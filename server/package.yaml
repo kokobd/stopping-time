@@ -22,12 +22,16 @@ dependencies:
 - vector
 - transformers
 - monads-tf
+- servant
+- servant-server
+- bytestring
+- aeson
 
 library:
   source-dirs: src
 
 executables:
-  markov-demo-exe:
+  stopping-time-server-exe:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
@@ -35,7 +39,7 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - markov-demo
+    - stopping-time-server
 
 tests:
   markov-demo-test:
@@ -46,4 +50,4 @@ tests:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - markov-demo
+    - stopping-time-server
