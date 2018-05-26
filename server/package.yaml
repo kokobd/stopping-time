@@ -23,6 +23,7 @@ dependencies:
 - servant-server
 - bytestring
 - aeson
+- containers
 
 library:
   source-dirs: src

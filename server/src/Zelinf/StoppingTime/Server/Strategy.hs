@@ -4,25 +4,30 @@
 module Zelinf.StoppingTime.Server.Strategy
   ( Strategy
   , shouldStop
+  , stopValues
   , fromList
   ) where
 
 import           Data.Aeson
-import           Data.List
+import           Data.Set   (Set)
+import qualified Data.Set   as Set
 
 {-|
 A strategy describes when to stop. It is basically a
 stopping set.
 Its JSON format is guranteed to be a JSON array.
 -}
-newtype Strategy a = Strategy [a]
-  deriving (ToJSON, FromJSON, Show)
+newtype Strategy a = Strategy (Set a)
+  deriving (ToJSON, FromJSON, Eq)
 
-instance Ord a => Eq (Strategy a) where
-  (Strategy xs) == (Strategy ys) = (sort . nub $ xs) == (sort . nub $ ys)
+instance Show a => Show (Strategy a) where
+  show = show . stopValues
 
-shouldStop :: Eq a => Strategy a -> a -> Bool
-shouldStop (Strategy xs) x = elem x xs
+shouldStop :: Ord a => Strategy a -> a -> Bool
+shouldStop (Strategy xs) x = Set.member x xs
 
-fromList :: [a] -> Strategy a
-fromList xs = Strategy xs
+stopValues :: Strategy a -> [a]
+stopValues (Strategy xs) = Set.elems xs
+
+fromList :: Ord a => [a] -> Strategy a
+fromList = Strategy . Set.fromList
