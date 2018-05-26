@@ -4,11 +4,11 @@
 module Zelinf.StoppingTime.Server.Strategy
   ( Strategy
   , shouldStop
+  , fromList
   ) where
 
 import           Data.Aeson
 import           Data.List
-import           GHC.Exts
 
 {-|
 A strategy describes when to stop. It is basically a
@@ -24,7 +24,5 @@ instance Ord a => Eq (Strategy a) where
 shouldStop :: Eq a => Strategy a -> a -> Bool
 shouldStop (Strategy xs) x = elem x xs
 
-instance IsList (Strategy a) where
-  type Item (Strategy a) = a
-  fromList = Strategy
-  toList (Strategy xs) = xs
+fromList :: [a] -> Strategy a
+fromList xs = Strategy xs

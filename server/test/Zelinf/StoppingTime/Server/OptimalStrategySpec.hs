@@ -17,7 +17,7 @@ spec = do
         [1, 2, 3, 4, 5, 0]
         [1, 1, 1, 1, 1, 1]
         10
-        [2, 3, 4, 5, 0]
+        (fromList [2, 3, 4, 5, 0])
 
 expectOptimalStrategy :: [Double] -- ^f
                       -> [Double] -- ^g
