@@ -1,11 +1,6 @@
-{-# LANGUAGE OverloadedLists #-}
-
 module Main where
 
-import           Data.Matrix (Matrix)
-import qualified Data.Matrix as Matrix
-import           Data.Vector (Vector)
-import qualified Data.Vector as Vector
+import qualified Zelinf.StoppingTime.Server
 
 main :: IO ()
-main = putStrLn "Hi"
+main = Zelinf.StoppingTime.Server.main
