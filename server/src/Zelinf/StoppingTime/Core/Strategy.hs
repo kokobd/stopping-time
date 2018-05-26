@@ -1,7 +1,7 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE TypeFamilies               #-}
 
-module Zelinf.StoppingTime.Server.Strategy
+module Zelinf.StoppingTime.Core.Strategy
   ( Strategy
   , shouldStop
   , stopValues

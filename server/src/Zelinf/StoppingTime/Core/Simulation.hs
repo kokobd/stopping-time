@@ -1,10 +1,10 @@
-module Zelinf.StoppingTime.Server.Simulation
+module Zelinf.StoppingTime.Core.Simulation
   (
   ) where
 
-import           Data.Vector                         (Vector)
+import           Data.Vector                       (Vector)
 
-import           Zelinf.StoppingTime.Server.Strategy
+import           Zelinf.StoppingTime.Core.Strategy
 
 averageIncome :: (Fractional a, Foldable t, Integral i)
               => t a -- ^f

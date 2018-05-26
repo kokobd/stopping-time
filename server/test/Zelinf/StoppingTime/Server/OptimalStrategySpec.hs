@@ -6,8 +6,8 @@ module Zelinf.StoppingTime.Server.OptimalStrategySpec
 
 import           Test.Hspec
 
-import           Zelinf.StoppingTime.Server.OptimalStrategy
-import           Zelinf.StoppingTime.Server.Strategy
+import           Zelinf.StoppingTime.Core.OptimalStrategy
+import           Zelinf.StoppingTime.Core.Strategy
 
 spec :: Spec
 spec = do

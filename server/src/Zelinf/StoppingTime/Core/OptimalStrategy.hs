@@ -5,20 +5,20 @@
 {-# LANGUAGE ScopedTypeVariables   #-}
 {-# LANGUAGE TypeFamilies          #-}
 
-module Zelinf.StoppingTime.Server.OptimalStrategy
+module Zelinf.StoppingTime.Core.OptimalStrategy
   ( optimalStrategy
   ) where
 
 import           Control.Monad.Reader.Class
-import           Control.Monad.Trans.Reader          (runReader)
+import           Control.Monad.Trans.Reader        (runReader)
 import           Data.Foldable
-import           Data.List                           (genericIndex)
-import           Data.Matrix                         (Matrix)
-import qualified Data.Matrix                         as Matrix
-import           Data.Vector                         (Vector)
-import qualified Data.Vector                         as Vector
+import           Data.List                         (genericIndex)
+import           Data.Matrix                       (Matrix)
+import qualified Data.Matrix                       as Matrix
+import           Data.Vector                       (Vector)
+import qualified Data.Vector                       as Vector
 
-import           Zelinf.StoppingTime.Server.Strategy
+import           Zelinf.StoppingTime.Core.Strategy
 
 optimalStrategy :: (Ord a, Fractional a, Foldable t, Integral i)
                 => t a -- ^f: income(each turn) vector
