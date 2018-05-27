@@ -1,5 +1,3 @@
-module Main where
-
 import qualified Zelinf.StoppingTime.Server
 
 main :: IO ()

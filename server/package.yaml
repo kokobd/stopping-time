@@ -29,8 +29,8 @@ library:
   source-dirs: src
 
 executables:
-  stopping-time-server-exe:
-    main:                Main.hs
+  server:
+    main:                Server.hs
     source-dirs:         app
     ghc-options:
     - -threaded
@@ -38,6 +38,14 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - stopping-time-server
+  js-gen:
+    main: JSGen.hs
+    source-dirs: app
+    ghc-options:
+    - -threaded
+    dependencies:
+    - stopping-time-server
+    - servant-js
 
 tests:
   server-unit-test:
