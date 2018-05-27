@@ -13,7 +13,7 @@ import           Servant.API
 import           Zelinf.StoppingTime.Core.Strategy
 
 type API = "optimal-strategy"
-         :> ReqBody '[JSON] Params :> Get '[JSON] Strategy
+         :> ReqBody '[JSON] Params :> Get '[JSON] (Strategy Double)
 
 data Params = Params
   { paramIncome     :: Vector Double

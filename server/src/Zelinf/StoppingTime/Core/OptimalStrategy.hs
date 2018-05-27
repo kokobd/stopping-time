@@ -9,8 +9,7 @@ module Zelinf.StoppingTime.Core.OptimalStrategy
   ( optimalStrategy
   ) where
 
-import           Control.Monad.Reader.Class
-import           Control.Monad.Trans.Reader        (runReader)
+import           Control.Monad.Reader
 import           Data.Foldable
 import           Data.List                         (genericIndex)
 import           Data.Matrix                       (Matrix)
@@ -74,7 +73,7 @@ data Environment a = Environment
   , envTransitionMatrix :: Matrix a
   }
 
-iterateWithCost :: (Ord a, Num a, MonadReader m, (EnvType m ~ Environment a))
+iterateWithCost :: (Ord a, Num a, MonadReader (Environment a) m)
                 => Vector a -- ^u_(n-1)
                 -> m (Vector a) -- ^u_n
 iterateWithCost u = do

@@ -1,6 +1,6 @@
 name:                stopping-time-server
 version:             0.1.0.0
-github:              "zelinf/markov-demo"
+github:              "zelinf/stopping-time"
 license:             BSD3
 author:              "Zelin Feng"
 maintainer:          "fengzlin@mail2.sysu.edu.cn"
@@ -17,10 +17,10 @@ dependencies:
 - matrix
 - text
 - vector
-- transformers
-- monads-tf
+- mtl
 - servant
 - servant-server
+- warp
 - bytestring
 - aeson
 - containers
