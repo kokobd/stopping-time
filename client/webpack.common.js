@@ -3,14 +3,18 @@ const webpack = require('webpack');
 const path = require('path');
 
 module.exports = {
-  entry: './src/index.ts',
+  entry: './src/index.tsx',
   output: {
+    path: __dirname + "/build",
     filename: 'bundle.js',
-    path: __dirname + "/build"
   },
 
   resolve: {
-    extensions: [".ts", ".tsx", ".js", ".json"]
+    extensions: [".ts", ".tsx", ".js", ".json"],
+    modules: [
+      path.resolve('./node_modules'),
+      path.resolve('./src')
+    ]
   },
 
   module: {
