@@ -1,10 +1,8 @@
 import * as React from "react";
-import {
-  Table,
-  TableBody
-} from "@material-ui/core";
+
 import AwardModel from "stopping-time/model/Award";
 import Award from "stopping-time/ui/Award";
+import AwardTable from "stopping-time/ui/AwardTable";
 
 import fixThis from "stopping-time/model/FixThis";
 
@@ -17,25 +15,41 @@ export default class Main extends React.Component<{}, State> {
     super(props);
     fixThis(this);
 
-    this.state = {
-      awards: [{ income: 100, cost: 50, stop: false }]
-    };
+    this.state =
+      {
+        awards: []
+      };
   }
 
   public render(): React.ReactNode {
     return (
-      <div style={{ display: "table", margin: "0px auto", maxWidth: "640px", width: "80%" }}>
-        <Table style={{ width: "100%", tableLayout: "fixed" }} cellSpacing={0} cellPadding={0} >
-          <TableBody>
-            <Award model={this.state.awards[0]} onChange={this.onChange} />
-          </TableBody>
-        </Table>
-      </div>
+      <AwardTable
+        awards={this.state.awards}
+        onUpdate={this.handleUpdate}
+        onAdd={this.handleAdd}
+        onDelete={this.handleDelete}
+      />
     );
   }
 
-  private onChange(model: AwardModel) {
-    this.state.awards[0] = model;
-    this.forceUpdate();
+  private handleUpdate(index: number, newEntry: AwardModel) {
+    let newAwards: AwardModel[] = [];
+    Object.assign(newAwards, this.state.awards);
+    newAwards[index] = newEntry;
+    this.setState({ awards: newAwards });
+  }
+
+  private handleAdd(newEntry: AwardModel) {
+    let newAwards: AwardModel[] = [];
+    Object.assign(newAwards, this.state.awards);
+    newAwards.push(newEntry);
+    this.setState({ awards: newAwards });
+  }
+
+  private handleDelete(index: number) {
+    let newAwards: AwardModel[] = [];
+    Object.assign(newAwards, this.state.awards);
+    newAwards.splice(index, 1);
+    this.setState({ awards: newAwards });
   }
 }

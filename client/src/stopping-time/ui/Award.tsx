@@ -1,17 +1,18 @@
 import * as React from "react";
-import {
-  Checkbox,
-  TextField,
-  TableRow,
-  TableCell
-} from "@material-ui/core"
+import Checkbox from "@material-ui/core/Checkbox";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+import IconButton from "@material-ui/core/IconButton";
+import TextField from "@material-ui/core/TextField";
+import DeleteIcon from "@material-ui/icons/Delete"
 
 import AwardModel from "stopping-time/model/Award";
 import fixThis from "stopping-time/model/FixThis";
 
 interface Props {
   model: AwardModel;
-  onChange: (newModel: AwardModel) => void;
+  onUpdate: (newModel: AwardModel) => void;
+  onDelete: () => void;
 }
 
 export default class Award extends React.Component<Props, {}> {
@@ -33,15 +34,21 @@ export default class Award extends React.Component<Props, {}> {
         hover
         selected={this.props.model.stop}
       >
-        <TableCell style={{ ...cellStyle, width: "4em" }}>
-          <Checkbox checked={this.props.model.stop} onChange={this.handleStopChange} />
+        <TableCell style={cellStyle}>
+          <IconButton onClick={this.handleDelete}>
+            <DeleteIcon />
+          </IconButton>
+        </TableCell>
+        <TableCell style={cellStyle}>
+          <Checkbox color="primary"
+            checked={this.props.model.stop} onChange={this.handleStopChange} />
         </TableCell>
         <TableCell style={cellStyle}>
           <TextField
             type="number"
             value={this.props.model.income}
             onChange={this.handleIncomeChange}
-            style={{ direction: "rtl" }}
+            InputProps={{ inputProps: { style: { textAlign: "right" } } }}
             fullWidth
           />
         </TableCell>
@@ -50,7 +57,7 @@ export default class Award extends React.Component<Props, {}> {
             type="number"
             value={this.props.model.cost}
             onChange={this.handleCostChange}
-            style={{ direction: "rtl" }}
+            InputProps={{ inputProps: { style: { textAlign: "right" } } }}
             fullWidth
           />
         </TableCell>
@@ -64,7 +71,7 @@ export default class Award extends React.Component<Props, {}> {
         ...this.props.model,
         income: event.target.value
       };
-    this.props.onChange(newModel);
+    this.props.onUpdate(newModel);
   }
 
   private handleCostChange(event: any) {
@@ -73,7 +80,7 @@ export default class Award extends React.Component<Props, {}> {
         ...this.props.model,
         cost: event.target.value
       };
-    this.props.onChange(newModel);
+    this.props.onUpdate(newModel);
   }
 
   private handleStopChange(event: any, checked: boolean) {
@@ -82,7 +89,11 @@ export default class Award extends React.Component<Props, {}> {
         ...this.props.model,
         stop: checked
       };
-    this.props.onChange(newModel);
+    this.props.onUpdate(newModel);
+  }
+
+  private handleDelete(event: any) {
+    this.props.onDelete();
   }
 
 }
