@@ -4,10 +4,10 @@ module Zelinf.StoppingTime.Server.OptimalStrategySpec
   ( spec
   ) where
 
+import           Data.Vector                              (Vector)
 import           Test.Hspec
 
 import           Zelinf.StoppingTime.Core.OptimalStrategy
-import           Zelinf.StoppingTime.Core.Strategy
 
 spec :: Spec
 spec = do
@@ -17,12 +17,12 @@ spec = do
         [1, 2, 3, 4, 5, 0]
         [1, 1, 1, 1, 1, 1]
         10
-        (fromList [2, 3, 4, 5, 0])
+        [False, True, True, True, True, True]
 
 expectOptimalStrategy :: [Double] -- ^f
                       -> [Double] -- ^g
                       -> Int -- ^iteration count
-                      -> Strategy Double -- ^expected result
+                      -> Vector Bool -- ^expected result
                       -> Expectation
 expectOptimalStrategy f g n expected = do
   let strategyM = optimalStrategy f g n

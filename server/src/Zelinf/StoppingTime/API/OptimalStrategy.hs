@@ -8,12 +8,11 @@ module Zelinf.StoppingTime.API.OptimalStrategy
   ) where
 
 import           Data.Aeson
-import           Data.Vector                       (Vector)
+import           Data.Vector (Vector)
 import           Servant.API
-import           Zelinf.StoppingTime.Core.Strategy
 
 type API = "optimal-strategy"
-         :> ReqBody '[JSON] Params :> Get '[JSON] (Strategy Double)
+         :> ReqBody '[JSON] Params :> Get '[JSON] (Vector Bool)
 
 data Params = Params
   { paramIncome     :: Vector Double
