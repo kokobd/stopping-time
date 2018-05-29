@@ -1,6 +1,7 @@
 client/node_modules/
 client/build/
 client/.vscode/
+client/src/stopping-time/api.js
 
 server/.stack-work/
 server/stopping-time-server.cabal

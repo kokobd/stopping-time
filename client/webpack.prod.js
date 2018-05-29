@@ -6,8 +6,17 @@ module.exports = merge(common, {
   devtool: 'source-map',
   plugins: [
     new UglifyJSPlugin({
-      sourceMap: true
+      sourceMap: true,
+      uglifyOptions: {
+        compress: {
+          unused: true,
+          dead_code: true
+        }
+      }
     }),
   ],
   mode: 'production',
+  performance: {
+    hints: false
+  }
 });

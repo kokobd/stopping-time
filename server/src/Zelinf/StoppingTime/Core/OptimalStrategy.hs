@@ -11,24 +11,22 @@ module Zelinf.StoppingTime.Core.OptimalStrategy
 
 import           Control.Monad.Reader
 import           Data.Foldable
-import           Data.List                         (genericIndex)
-import           Data.Matrix                       (Matrix)
-import qualified Data.Matrix                       as Matrix
-import           Data.Vector                       (Vector)
-import qualified Data.Vector                       as Vector
-
-import           Zelinf.StoppingTime.Core.Strategy
+import           Data.List            (genericIndex)
+import           Data.Matrix          (Matrix)
+import qualified Data.Matrix          as Matrix
+import           Data.Vector          (Vector)
+import qualified Data.Vector          as Vector
 
 optimalStrategy :: (Ord a, Fractional a, Foldable t, Integral i)
                 => t a -- ^f: income(each turn) vector
                 -> t a -- ^g: cost vector
                 -> i -- ^iterations
-                -> Maybe (Strategy a)
+                -> Maybe (Vector Bool)
 optimalStrategy f' g' n =
   let f = toVector f'
       g = toVector g'
   in if | length f /= length g -> Nothing
-        | length f == 0 -> Just (fromList [])
+        | length f == 0 -> Just Vector.empty
         | otherwise ->
             Just (optimalStrategy' f g n)
 
@@ -36,7 +34,7 @@ optimalStrategy' :: (Ord a, Fractional a, Integral i)
                  => Vector a -- ^f
                  -> Vector a -- ^g
                  -> i
-                 -> Strategy a
+                 -> Vector Bool
 optimalStrategy' f g n =
   lastVectorToStrategy f . flip runReader environment $
     flip genericIndex (n-1) <$> (iterateM iterateWithCost initial)
@@ -62,10 +60,8 @@ toVector = Vector.fromList . toList
 lastVectorToStrategy :: Ord a
                      => Vector a -- ^f
                      -> Vector a -- ^u
-                     -> Strategy a
-lastVectorToStrategy f u =
-  fromList . fmap fst . filter (uncurry (<=))
-  $ zip (toList u) (toList f)
+                     -> Vector Bool
+lastVectorToStrategy f u = Vector.zipWith (>=) f u
 
 data Environment a = Environment
   { envCost             :: Vector a

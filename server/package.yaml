@@ -12,6 +12,12 @@ category:            Web
 
 description:         Please see the README on GitHub at <https://github.com/zelinf/markov-demo#readme>
 
+flags:
+  production:
+    description: Whether to build for production environment
+    manual: true
+    default: False
+
 dependencies:
 - base >= 4.7 && < 5
 - matrix
@@ -21,16 +27,21 @@ dependencies:
 - servant
 - servant-server
 - warp
+- wai-cors
 - bytestring
 - aeson
 - containers
 
 library:
   source-dirs: src
+  when:
+    - condition: flag(production)
+      ghc-options: -DPRODUCTION
+
 
 executables:
-  stopping-time-server-exe:
-    main:                Main.hs
+  server:
+    main:                Server.hs
     source-dirs:         app
     ghc-options:
     - -threaded
@@ -38,6 +49,15 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - stopping-time-server
+  js-gen:
+    main: JSGen.hs
+    source-dirs: app
+    ghc-options:
+    - -threaded
+    dependencies:
+    - stopping-time-server
+    - servant-js
+    - optparse-applicative
 
 tests:
   server-unit-test:
