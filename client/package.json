@@ -5,7 +5,7 @@
   "main": "build/bundle.js",
   "scripts": {
     "start": "webpack-dev-server --config webpack.dev.js",
-    "build": "npm run api-gen && webpack --config webpack.prod.js",
+    "build": "NODE_ENV=production && npm run api-gen && webpack --config webpack.prod.js",
     "api-gen": "sh scripts/api-gen.sh"
   },
   "author": "zelinf <fengzlin@mail2.sysu.edu.cn>",

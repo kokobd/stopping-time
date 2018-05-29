@@ -29,10 +29,6 @@ export default class AwardTable extends React.Component<AwardTableProps> {
   public render(): React.ReactNode {
     const paperStyle: React.CSSProperties =
       {
-        display: "table",
-        margin: "0px auto",
-        maxWidth: "640px",
-        width: "80%",
         paddingLeft: "1.5em",
         paddingRight: "1.5em",
         paddingBottom: "1.5em"
@@ -85,8 +81,8 @@ export default class AwardTable extends React.Component<AwardTableProps> {
     if (onAdd) {
       onAdd(
         {
-          income: 100,
-          cost: 100,
+          income: 0,
+          cost: 0,
           stop: false
         }
       );

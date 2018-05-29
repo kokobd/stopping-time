@@ -69,7 +69,7 @@ export default class Award extends React.Component<Props, {}> {
     const newModel =
       {
         ...this.props.model,
-        income: event.target.value
+        income: Number(event.target.value)
       };
     this.props.onUpdate(newModel);
   }
@@ -78,7 +78,7 @@ export default class Award extends React.Component<Props, {}> {
     const newModel =
       {
         ...this.props.model,
-        cost: event.target.value
+        cost: Number(event.target.value)
       };
     this.props.onUpdate(newModel);
   }

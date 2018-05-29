@@ -12,7 +12,7 @@ import           Data.Vector (Vector)
 import           Servant.API
 
 type API = "optimal-strategy"
-         :> ReqBody '[JSON] Params :> Get '[JSON] (Vector Bool)
+         :> ReqBody '[JSON] Params :> Post '[JSON] (Vector Bool)
 
 data Params = Params
   { paramIncome     :: Vector Double
