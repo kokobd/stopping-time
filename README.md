@@ -17,6 +17,8 @@ previos profit and must quit now.
 
 ## Build and Run
 
+### Prerequisites
+
 You need to install the latest version of [`npm`][2] and [`stack`][1].
 Also a Linux-like environment is assumed, as we use some simple shell
 scripts.
@@ -30,7 +32,10 @@ just keep an active network connection and have a cup of coffee.
 public package repository of Haskell. You may need to connect to
 VPN or some sort of proxies, etc, if you receive network errors.
 
-### server
+There are some configuration files **YOU MUST** provide. See [wiki][3]
+for more details.
+
+### Server
 ```sh
 cd server
 # If you want a regular build
@@ -43,7 +48,7 @@ stack exec server
 echo $(stack path --local-install-root)/bin/server
 ```
 
-### client
+### Client
 ```sh
 cd client
 npm install
@@ -56,3 +61,4 @@ You may visit `localhost:9000` if the dev server is running.
 
 [1]: https://docs.haskellstack.org/en/stable/install_and_upgrade/
 [2]: https://www.npmjs.com/get-npm
+[3]: https://github.com/zelinf/stopping-time/wiki/Missing-Files
