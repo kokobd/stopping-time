@@ -30,13 +30,17 @@ dependencies:
 - wai-cors
 - bytestring
 - aeson
-- containers
+- file-embed
 
 library:
   source-dirs: src
+  exposed-modules:
+  - Zelinf.StoppingTime.Server
+  - Zelinf.StoppingTime.API
+  - Zelinf.StoppingTime.Config
   when:
     - condition: flag(production)
-      ghc-options: -DPRODUCTION
+      cpp-options: -DPRODUCTION
 
 
 executables:
@@ -58,6 +62,9 @@ executables:
     - stopping-time-server
     - servant-js
     - optparse-applicative
+    when:
+      - condition: flag(production)
+        cpp-options: -DPRODUCTION
 
 tests:
   server-unit-test:

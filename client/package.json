@@ -4,8 +4,8 @@
   "description": "",
   "main": "build/bundle.js",
   "scripts": {
-    "start": "webpack-dev-server --config webpack.dev.js",
-    "build": "NODE_ENV=production && npm run api-gen && webpack --config webpack.prod.js",
+    "start": "export NODE_ENV=debug && npm run api-gen && webpack-dev-server --config webpack.dev.js",
+    "build": "export NODE_ENV=production && npm run api-gen && webpack --config webpack.prod.js",
     "api-gen": "sh scripts/api-gen.sh"
   },
   "author": "zelinf <fengzlin@mail2.sysu.edu.cn>",
