@@ -1,3 +1,7 @@
+deploy.sh
+dist/
+config/
+
 client/node_modules/
 client/build/
 client/.vscode/
