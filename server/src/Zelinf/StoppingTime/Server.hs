@@ -17,9 +17,10 @@ import           Servant.Server
 import           Servant.Utils.StaticFiles                  (serveDirectoryWebApp)
 
 import           Zelinf.StoppingTime.API                    (API)
-import           Zelinf.StoppingTime.Config                 (Config, config)
+import           Zelinf.StoppingTime.Config                 (config)
 import qualified Zelinf.StoppingTime.Config                 as Config
 import qualified Zelinf.StoppingTime.Server.OptimalStrategy as OptimalStrategy
+import qualified Zelinf.StoppingTime.Server.Simulation      as Simulation
 
 main :: IO ()
 main = do
@@ -28,21 +29,25 @@ main = do
   run port app
 
 app :: Application
-app = cors (const $ Just corsPolicy) $ serve (Proxy :: Proxy API') server
+app = cors (const $ Just corsPolicy) $ serve (Proxy :: Proxy API') server'
 
-corsPolicy :: CorsResourcePolicy
-corsPolicy =
-  let requestHeaders = "content-type" : corsRequestHeaders simpleCorsResourcePolicy
-  in simpleCorsResourcePolicy { corsRequestHeaders = requestHeaders }
+server :: Server API
+server =
+       OptimalStrategy.server
+  :<|> Simulation.server
+
+server' :: Server API'
+server' = server :<|> staticServer
 
 type API' = API
   :<|> StaticAPI
-
-server :: Server API'
-server = OptimalStrategy.server
-  :<|> staticServer
 
 type StaticAPI = Raw
 
 staticServer :: Server StaticAPI
 staticServer = serveDirectoryWebApp "static"
+
+corsPolicy :: CorsResourcePolicy
+corsPolicy =
+  let requestHeaders = "content-type" : corsRequestHeaders simpleCorsResourcePolicy
+  in simpleCorsResourcePolicy { corsRequestHeaders = requestHeaders }

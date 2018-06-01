@@ -11,11 +11,12 @@ module Zelinf.StoppingTime.Core.OptimalStrategy
 
 import           Control.Monad.Reader
 import           Data.Foldable
-import           Data.List            (genericIndex)
-import           Data.Matrix          (Matrix)
-import qualified Data.Matrix          as Matrix
-import           Data.Vector          (Vector)
-import qualified Data.Vector          as Vector
+import           Data.List                     (genericIndex)
+import           Data.Matrix                   (Matrix)
+import qualified Data.Matrix                   as Matrix
+import           Data.Vector                   (Vector)
+import qualified Data.Vector                   as Vector
+import           Zelinf.StoppingTime.Core.Util
 
 optimalStrategy :: (Ord a, Fractional a, Foldable t, Integral i)
                 => t a -- ^f: income(each turn) vector
@@ -23,8 +24,8 @@ optimalStrategy :: (Ord a, Fractional a, Foldable t, Integral i)
                 -> i -- ^iterations
                 -> Maybe (Vector Bool)
 optimalStrategy f' g' n =
-  let f = toVector f'
-      g = toVector g'
+  let f = foldableToVector f'
+      g = foldableToVector g'
   in if | length f /= length g -> Nothing
         | length f == 0 -> Just Vector.empty
         | otherwise ->
@@ -51,11 +52,6 @@ transitionMatrix f =
   where
   n = length f
   elemGen (x, _) = if f Vector.! (x - 1) == 0 then 0 else 1 / fromIntegral n
-
-{-# INLINE toVector #-}
-toVector :: Foldable t
-         => t a -> Vector a
-toVector = Vector.fromList . toList
 
 lastVectorToStrategy :: Ord a
                      => Vector a -- ^f

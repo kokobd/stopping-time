@@ -17,5 +17,5 @@ server :: Server API
 server Params{..} = do
   let resultM = optimalStrategy paramIncome paramCost paramIterations
   case resultM of
-    Nothing       -> Handler . throwError $ err412
+    Nothing       -> throwError err412
     (Just result) -> pure result

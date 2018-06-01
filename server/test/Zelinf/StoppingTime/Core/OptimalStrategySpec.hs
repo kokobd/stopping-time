@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedLists #-}
 
-module Zelinf.StoppingTime.Server.OptimalStrategySpec
+module Zelinf.StoppingTime.Core.OptimalStrategySpec
   ( spec
   ) where
 

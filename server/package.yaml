@@ -24,6 +24,7 @@ dependencies:
 - text
 - vector
 - mtl
+- transformers
 - servant
 - servant-server
 - warp
@@ -31,13 +32,11 @@ dependencies:
 - bytestring
 - aeson
 - file-embed
+- MonadRandom
+- random
 
 library:
   source-dirs: src
-  exposed-modules:
-  - Zelinf.StoppingTime.Server
-  - Zelinf.StoppingTime.API
-  - Zelinf.StoppingTime.Config
   when:
     - condition: flag(production)
       cpp-options: -DPRODUCTION

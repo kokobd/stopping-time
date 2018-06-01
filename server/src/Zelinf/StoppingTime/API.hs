@@ -7,5 +7,9 @@ module Zelinf.StoppingTime.API
 
 import           Servant.API
 import qualified Zelinf.StoppingTime.API.OptimalStrategy as OptimalStrategy
+import qualified Zelinf.StoppingTime.API.Simulation      as Simulation
 
-type API = "api" :> OptimalStrategy.API
+type API = "api" :> (
+       OptimalStrategy.API
+  :<|> Simulation.API
+  )
