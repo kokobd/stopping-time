@@ -14,4 +14,4 @@ import           Zelinf.StoppingTime.Core.Simulation
 server :: Server API
 server Params{..} = do
   result <- liftIO $ averageProfit paramIncome paramCost paramStop paramCount
-  maybe (throwError err412) pure result
+  maybe (throwError err412) (pure . Result) result

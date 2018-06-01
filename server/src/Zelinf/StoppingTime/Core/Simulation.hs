@@ -8,10 +8,10 @@ module Zelinf.StoppingTime.Core.Simulation
 
 import           Control.Monad.Random.Class
 import           Control.Monad.Reader
-import           Data.List                     (span)
-import           Data.Vector                   (Vector)
-import qualified Data.Vector                   as Vector
-import           Zelinf.StoppingTime.Core.Util
+import           Data.List                         (span)
+import           Data.Vector                       (Vector)
+import qualified Data.Vector                       as Vector
+import           Zelinf.StoppingTime.Internal.Util (foldableToVector)
 
 averageProfit :: (Fractional a, Foldable t, Integral i, MonadRandom m)
               => t a -- ^f, the income vector

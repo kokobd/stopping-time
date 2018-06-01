@@ -18,4 +18,4 @@ server Params{..} = do
   let resultM = optimalStrategy paramIncome paramCost paramIterations
   case resultM of
     Nothing       -> throwError err412
-    (Just result) -> pure result
+    (Just result) -> pure (Result result)

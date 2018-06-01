@@ -27,6 +27,7 @@ dependencies:
 - transformers
 - servant
 - servant-server
+- servant-docs
 - warp
 - wai-cors
 - bytestring
@@ -64,6 +65,15 @@ executables:
     when:
       - condition: flag(production)
         cpp-options: -DPRODUCTION
+  doc-gen:
+    main: DocGen.hs
+    source-dirs: app
+    ghc-options:
+    - -threaded
+    dependencies:
+    - stopping-time-server
+    - servant-pandoc
+    - pandoc
 
 tests:
   server-unit-test:

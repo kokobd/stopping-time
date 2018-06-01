@@ -10,13 +10,12 @@ module Zelinf.StoppingTime.Core.OptimalStrategy
   ) where
 
 import           Control.Monad.Reader
-import           Data.Foldable
-import           Data.List                     (genericIndex)
-import           Data.Matrix                   (Matrix)
-import qualified Data.Matrix                   as Matrix
-import           Data.Vector                   (Vector)
-import qualified Data.Vector                   as Vector
-import           Zelinf.StoppingTime.Core.Util
+import           Data.List                         (genericIndex)
+import           Data.Matrix                       (Matrix)
+import qualified Data.Matrix                       as Matrix
+import           Data.Vector                       (Vector)
+import qualified Data.Vector                       as Vector
+import           Zelinf.StoppingTime.Internal.Util (foldableToVector, iterateM)
 
 optimalStrategy :: (Ord a, Fractional a, Foldable t, Integral i)
                 => t a -- ^f: income(each turn) vector
@@ -84,9 +83,3 @@ multiplyVector xs ys = Vector.sum (Vector.zipWith (*) xs ys)
 matrixTimesVector :: Num a => Matrix a -> Vector a -> Vector a
 matrixTimesVector mat vec =
   Vector.fromList $ fmap (multiplyVector vec) (rows mat)
-
-iterateM :: Monad m
-         => (a -> m a) -> a -> m [a]
-iterateM f x = do
-  y <- f x
-  (x:) <$> (iterateM f y)
