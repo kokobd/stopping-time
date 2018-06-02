@@ -3,6 +3,7 @@ import * as React from "react";
 import AwardModel from "stopping-time/model/Award";
 import Award from "stopping-time/ui/Award";
 import AwardTable from "stopping-time/ui/AwardTable";
+import Simulation from "stopping-time/ui/Simulation";
 import OptimalStrategy from "stopping-time/ui/OptimalStrategy";
 import Dialog from "@material-ui/core/Dialog";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -36,6 +37,7 @@ export default class Main extends React.Component<{}, State> {
   public render(): React.ReactNode {
     const incomeVector: number[] = this.state.awards.map(x => x.income);
     const costVector: number[] = this.state.awards.map(x => x.cost);
+    const stopVector: boolean[] = this.state.awards.map(x => x.stop);
     return (<>
       <div style={{
         display: "table",
@@ -55,6 +57,16 @@ export default class Main extends React.Component<{}, State> {
             costVector={costVector}
             onCalculationFinish={this.handleCalculationFinish}
             onError={this.handleCalculationError}
+            onWaiting={() => this.setState({ waiting: true })}
+          />
+        </div>
+        <div style={{ marginTop: "0.5em" }}>
+          <Simulation
+            income={incomeVector}
+            cost={costVector}
+            stop={stopVector}
+            onFinish={this.handleSimulationFinish}
+            onError={this.handleSimulationError}
             onWaiting={() => this.setState({ waiting: true })}
           />
         </div>
@@ -116,6 +128,16 @@ export default class Main extends React.Component<{}, State> {
   }
 
   private handleCalculationError(message: string) {
+    console.log("Error: " + message);
+    this.setState({ waiting: false });
+  }
+
+  private handleSimulationFinish(result: number) {
+    console.log(result);
+    this.setState({ waiting: false });
+  }
+
+  private handleSimulationError(message: string) {
     console.log("Error: " + message);
     this.setState({ waiting: false });
   }

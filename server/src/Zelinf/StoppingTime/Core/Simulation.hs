@@ -13,7 +13,7 @@ import           Data.Vector                       (Vector)
 import qualified Data.Vector                       as Vector
 import           Zelinf.StoppingTime.Internal.Util (foldableToVector)
 
-averageProfit :: (Fractional a, Foldable t, Integral i, MonadRandom m)
+averageProfit :: (Eq a, Fractional a, Foldable t, Integral i, MonadRandom m)
               => t a -- ^f, the income vector
               -> t a -- ^g, the cost vector
               -> t Bool -- ^the stopping set of choice
@@ -37,19 +37,22 @@ data Input a = Input
   , inputStop   :: Vector Bool
   }
 
-averageProfit' :: (Fractional a, MonadRandom m)
+averageProfit' :: (Eq a, Fractional a, MonadRandom m)
                => Int
                -> ReaderT (Input a) m a
 averageProfit' n = fmap average (sequenceA $ take n (repeat simulateOnce))
   where average xs = sum xs / fromIntegral n
 
-simulateOnce :: (Fractional a, MonadRandom m)
+simulateOnce :: (Eq a, Fractional a, MonadRandom m)
              => ReaderT (Input a) m a
 simulateOnce = do
   Input{..} <- ask
   let n = length inputIncome
   randomIndexes <- getRandomRs (0, n - 1)
-  let (xs', y':_) = span (\i -> not (inputStop Vector.! i)) randomIndexes
-  let indexes = xs' ++ [y']
-  pure $
-    sum $ fmap (\i -> (inputIncome Vector.! i) - (inputCost Vector.! i)) indexes
+  let (xs', y':_) = span (shouldStop inputIncome inputStop) randomIndexes
+  let indexes = take 10000 $ xs' ++ [y']
+  let totalIncome = if inputIncome Vector.! y' == 0 then 0 else sum (fmap (inputIncome Vector.!) indexes)
+  let totalCost = sum (fmap (inputCost Vector.!) indexes)
+  pure $ totalIncome - totalCost
+  where
+  shouldStop income stop i = not (stop Vector.! i) && (income Vector.! i /= 0)

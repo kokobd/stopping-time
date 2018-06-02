@@ -37,18 +37,17 @@ export default class OptimalStrategy extends React.Component<OptimalStrategyProp
 
   public render(): React.ReactNode {
     return (
-      <Paper style={{ padding: "0.5em" }} >
-        <div style={{
-          display: "table",
-          margin: "0px auto"
-        }}>
+      <Paper style={OptimalStrategy.paperStyle}>
+        <div style={OptimalStrategy.leftDivStyle}>
           <Button
             color="primary"
-            style={{ marginRight: "1.5em" }}
             variant="outlined"
             onClick={this.handleCalculate}
           >Calculate optimal strategy</Button>
-          <TextField label="Number of iterations" type="number"
+        </div>
+        <div style={OptimalStrategy.rightDivStyle}>
+          <TextField
+            label="Number of iterations" type="number"
             value={this.state.iterations}
             onChange={this.handleIterationsChange}
           />
@@ -57,7 +56,7 @@ export default class OptimalStrategy extends React.Component<OptimalStrategyProp
     );
   }
 
-  private handleIterationsChange(event: any) {
+  private handleIterationsChange(event: React.ChangeEvent<HTMLInputElement>) {
     this.setState({ iterations: Number(event.target.value) });
   }
 
@@ -85,4 +84,30 @@ export default class OptimalStrategy extends React.Component<OptimalStrategyProp
         onError(errorThrown);
       });
   }
+
+  private static paperStyle: React.CSSProperties =
+    {
+      padding: "0.5em",
+      display: "flex",
+      flexFlow: "row wrap",
+      alignContent: "stretch"
+    };
+
+  private static leftDivStyle: React.CSSProperties =
+    {
+      flexGrow: 1,
+      flexBasis: 0,
+      display: "flex",
+      justifyContent: "flex-end",
+      marginRight: "0.5em",
+    };
+
+  private static rightDivStyle: React.CSSProperties =
+    {
+      flexGrow: 1,
+      flexBasis: 0,
+      display: "flex",
+      justifyContent: "flex-start",
+      marginLeft: "0.5em",
+    };
 }

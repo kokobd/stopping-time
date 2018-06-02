@@ -6,7 +6,7 @@ set -e
 
 CUR_DIR="$(pwd)"
 cd ../server
-if [ $NODE_ENV = "production" ]; then
+if [ -n "$NODE_ENV" -a "$NODE_ENV" = "production" ]; then
   stack build --flag ${PROJECT_NAME}-server:production
 else
   stack build
