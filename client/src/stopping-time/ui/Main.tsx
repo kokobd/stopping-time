@@ -12,6 +12,8 @@ import fixThis from "stopping-time/model/FixThis";
 
 interface State {
   awards: AwardModel[];
+  devaluationRate: number;
+
   waiting: boolean;
 }
 
@@ -23,21 +25,14 @@ export default class Main extends React.Component<{}, State> {
     this.state =
       {
         awards: [
-          { income: 1, cost: 1, stop: false },
-          { income: 2, cost: 1, stop: false },
-          { income: 3, cost: 1, stop: false },
-          { income: 4, cost: 1, stop: false },
-          { income: 5, cost: 1, stop: false },
-          { income: 0, cost: 1, stop: false },
+          new AwardModel()
         ],
+        devaluationRate: 1,
         waiting: false
       };
   }
 
   public render(): React.ReactNode {
-    const incomeVector: number[] = this.state.awards.map(x => x.income);
-    const costVector: number[] = this.state.awards.map(x => x.cost);
-    const stopVector: boolean[] = this.state.awards.map(x => x.stop);
     return (<>
       <div style={{
         display: "table",
@@ -48,26 +43,16 @@ export default class Main extends React.Component<{}, State> {
         <AwardTable
           awards={this.state.awards}
           onUpdate={this.handleUpdate}
-          onAdd={this.handleAdd}
-          onDelete={this.handleDelete}
+          devaluationRate={this.state.devaluationRate}
+          onUpdateDevaluationRate={rate => this.setState({ devaluationRate: rate })}
         />
-        <div style={{ marginTop: "0.5em" }}>
-          <OptimalStrategy
-            incomeVector={incomeVector}
-            costVector={costVector}
-            onCalculationFinish={this.handleCalculationFinish}
-            onError={this.handleCalculationError}
-            onWaiting={() => this.setState({ waiting: true })}
-          />
-        </div>
-        <div style={{ marginTop: "0.5em" }}>
+        <div style={{ marginTop: "1.5em" }}>
           <Simulation
-            income={incomeVector}
-            cost={costVector}
-            stop={stopVector}
-            onFinish={this.handleSimulationFinish}
+            awards={this.state.awards}
+            devaluationRate={this.state.devaluationRate}
             onError={this.handleSimulationError}
             onWaiting={() => this.setState({ waiting: true })}
+            onFinish={() => this.setState({ waiting: false })}
           />
         </div>
       </div>
@@ -90,51 +75,8 @@ export default class Main extends React.Component<{}, State> {
     </>);
   }
 
-  private copyArray<T>(xs: T[]): T[] {
-    let ys: T[] = [];
-    Object.assign(ys, xs);
-    return ys;
-  }
-
-  private handleUpdate(index: number, newEntry: AwardModel) {
-    let newAwards = this.copyArray(this.state.awards);
-    newAwards[index] = newEntry;
+  private handleUpdate(newAwards: AwardModel[]) {
     this.setState({ awards: newAwards });
-  }
-
-  private handleAdd(newEntry: AwardModel) {
-    let newAwards = this.copyArray(this.state.awards);
-    newAwards.push(newEntry);
-    this.setState({ awards: newAwards });
-  }
-
-  private handleDelete(index: number) {
-    let newAwards = this.copyArray(this.state.awards);
-    newAwards.splice(index, 1);
-    this.setState({ awards: newAwards });
-  }
-
-  private handleCalculationFinish(stoppingSet: boolean[]) {
-    let newAwards = this.copyArray(this.state.awards);
-    for (let i = 0; i < stoppingSet.length; ++i) {
-      let newAward =
-        {
-          ...newAwards[i],
-          stop: stoppingSet[i]
-        };
-      newAwards[i] = newAward;
-    }
-    this.setState({ awards: newAwards, waiting: false });
-  }
-
-  private handleCalculationError(message: string) {
-    console.log("Error: " + message);
-    this.setState({ waiting: false });
-  }
-
-  private handleSimulationFinish(result: number) {
-    console.log(result);
-    this.setState({ waiting: false });
   }
 
   private handleSimulationError(message: string) {

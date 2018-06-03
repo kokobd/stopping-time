@@ -11,6 +11,7 @@ import fixThis from "stopping-time/model/FixThis";
 
 interface Props {
   model: AwardModel;
+  probEditable: boolean;
   onUpdate: (newModel: AwardModel) => void;
   onDelete: () => void;
 }
@@ -31,8 +32,8 @@ export default class Award extends React.Component<Props, {}> {
 
     return (
       <TableRow
+        style={{ minWidth: 0 }}
         hover
-        selected={this.props.model.stop}
       >
         <TableCell style={cellStyle}>
           <IconButton onClick={this.handleDelete}>
@@ -40,24 +41,35 @@ export default class Award extends React.Component<Props, {}> {
           </IconButton>
         </TableCell>
         <TableCell style={cellStyle}>
-          <Checkbox color="primary"
-            checked={this.props.model.stop} onChange={this.handleStopChange} />
-        </TableCell>
-        <TableCell style={cellStyle}>
           <TextField
             type="number"
-            value={this.props.model.income}
-            onChange={this.handleIncomeChange}
-            InputProps={{ inputProps: { style: { textAlign: "right" } } }}
+            value={this.props.model.value}
+            onChange={this.handleValueChange}
+            InputProps={{
+              inputProps:
+                {
+                  style: { textAlign: "right", size: 0 }
+                }
+            }}
             fullWidth
           />
         </TableCell>
         <TableCell style={cellStyle}>
           <TextField
             type="number"
-            value={this.props.model.cost}
-            onChange={this.handleCostChange}
-            InputProps={{ inputProps: { style: { textAlign: "right" } } }}
+            value={this.props.model.probability.toFixed(4)}
+            onChange={this.handleProbChange}
+            InputProps={{
+              inputProps:
+                {
+                  style: { textAlign: "right" },
+                  size: 0,
+                  step: 0.0001,
+                  min: 0,
+                  max: 1
+                }
+            }}
+            disabled={!this.props.probEditable}
             fullWidth
           />
         </TableCell>
@@ -65,31 +77,14 @@ export default class Award extends React.Component<Props, {}> {
     );
   }
 
-  private handleIncomeChange(event: any) {
-    const newModel =
-      {
-        ...this.props.model,
-        income: Number(event.target.value)
-      };
-    this.props.onUpdate(newModel);
+  private handleValueChange(event: React.ChangeEvent<HTMLInputElement>) {
+    this.props.onUpdate(
+      this.props.model.setValue(event.target.valueAsNumber));
   }
 
-  private handleCostChange(event: any) {
-    const newModel =
-      {
-        ...this.props.model,
-        cost: Number(event.target.value)
-      };
-    this.props.onUpdate(newModel);
-  }
-
-  private handleStopChange(event: any, checked: boolean) {
-    const newModel =
-      {
-        ...this.props.model,
-        stop: checked
-      };
-    this.props.onUpdate(newModel);
+  private handleProbChange(event: React.ChangeEvent<HTMLInputElement>) {
+    this.props.onUpdate(
+      this.props.model.setProbability(event.target.valueAsNumber));
   }
 
   private handleDelete(event: any) {

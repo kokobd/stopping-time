@@ -4,39 +4,66 @@ import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 
 import fixThis from "stopping-time/model/FixThis";
+import AwardModel from "stopping-time/model/Award";
+import OptimalStrategy from "stopping-time/ui/OptimalStrategy";
+import Typography from "@material-ui/core/Typography";
 const api = require("stopping-time/api");
 
 export interface SimulationProps {
-  income: number[];
-  cost: number[];
-  stop: boolean[];
+  awards: AwardModel[];
+  devaluationRate: number;
 
-  onFinish: (result: number) => void;
   onError?: (message: string) => void;
   onWaiting?: () => void;
+  onFinish?: (averageProfit: number) => void;
 }
 
 export interface SimulationState {
-  count: number
+  count: number;
+  stopValue: number;
+  averageProfit?: number;
 }
 
 export default class Simulation extends React.Component<SimulationProps, SimulationState> {
   public render(): React.ReactNode {
     return (
-      <Paper style={Simulation.paperStyle}>
-        <div style={Simulation.leftDivStyle}>
-          <Button
-            color="primary"
-            variant="outlined"
-            onClick={this.handleRunSimulation}
-          >Run Simulation</Button>
+      <Paper style={{ padding: "0.5em" }}>
+        <div style={Simulation.flexContainerStyle}>
+          <div style={Simulation.innerStyle}>
+            <OptimalStrategy
+              awards={this.props.awards}
+              devaluationRate={this.props.devaluationRate}
+              onCalculationFinish={this.handleCalculationFinish}
+              onError={this.props.onError}
+              onWaiting={this.props.onWaiting}
+            />
+          </div>
+          <div style={Simulation.innerStyle}>
+            <Button
+              color="primary"
+              variant="outlined"
+              onClick={this.handleRunSimulation}
+            >Run Simulation</Button>
+          </div>
+          <div style={Simulation.innerStyle}>
+            <TextField label="Number of simulations" type="number"
+              onChange={this.handleCountChange}
+              value={this.state.count}
+              fullWidth
+            />
+          </div>
+          <div style={Simulation.innerStyle}>
+            <TextField
+              label="Stop Value" type="number"
+              value={this.state.stopValue}
+              onChange={this.handleStopValueChange}
+              fullWidth
+            />
+          </div>
         </div>
-        <div style={Simulation.rightDivStyle}>
-          <TextField label="Number of simulations" type="number"
-            onChange={this.handleCountChange}
-            value={this.state.count}
-          />
-        </div>
+        <Typography style={{ margin: "0.5em" }} variant="body2">
+          Average Profit: {this.state.averageProfit ? this.state.averageProfit : "none calculated"}
+        </Typography>
       </Paper>
     );
   }
@@ -47,7 +74,8 @@ export default class Simulation extends React.Component<SimulationProps, Simulat
 
     this.state =
       {
-        count: 100000
+        count: 100000,
+        stopValue: 1
       };
   }
 
@@ -60,14 +88,14 @@ export default class Simulation extends React.Component<SimulationProps, Simulat
   private handleRunSimulation(event: React.MouseEvent<HTMLElement>) {
     const reqBody =
       {
-        income: this.props.income,
-        cost: this.props.cost,
-        stop: this.props.stop,
+        awards: this.props.awards.map(x => [x.value, x.probability]),
+        devaluationRate: this.props.devaluationRate,
+        stopValue: this.state.stopValue,
         count: this.state.count
       };
     const onSuccess = (response: any) => {
       if (typeof response === "number") {
-        this.props.onFinish(response);
+        this.onSimulationFinish(response);
       } else {
         this.props.onError!("Ill-formatted response");
       }
@@ -83,29 +111,33 @@ export default class Simulation extends React.Component<SimulationProps, Simulat
     this.setState({ count: Number(event.target.value) });
   }
 
-  private static paperStyle: React.CSSProperties =
+  private onSimulationFinish(averageProfit: number) {
+    this.setState({ averageProfit });
+  }
+
+  private handleCalculationFinish(stopValue: number) {
+    this.setState({ stopValue });
+  }
+
+  private handleStopValueChange(event: React.ChangeEvent<HTMLInputElement>) {
+    this.setState({ stopValue: event.target.valueAsNumber });
+  }
+
+  private static flexContainerStyle: React.CSSProperties =
     {
-      padding: "0.5em",
       display: "flex",
-      flexFlow: "row wrap",
-      alignContent: "stretch"
+      flexDirection: "row",
+      flexWrap: "wrap",
+      alignContent: "stretch",
+      alignItems: "flex-end",
+      justifyContent: "space-around",
     };
 
-  private static leftDivStyle: React.CSSProperties =
+  private static innerStyle: React.CSSProperties =
     {
+      margin: "0.5em",
       flexGrow: 1,
-      flexBasis: 0,
-      display: "flex",
-      justifyContent: "flex-end",
-      marginRight: "0.5em",
-    };
-
-  private static rightDivStyle: React.CSSProperties =
-    {
-      flexGrow: 1,
-      flexBasis: 0,
-      display: "flex",
-      justifyContent: "flex-start",
-      marginLeft: "0.5em",
+      flexShrink: 1,
+      flexBasis: "auto"
     };
 }
