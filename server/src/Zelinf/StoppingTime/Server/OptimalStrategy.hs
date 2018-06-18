@@ -13,9 +13,6 @@ import           Zelinf.StoppingTime.API.OptimalStrategy
 import           Zelinf.StoppingTime.Core.OptimalStrategy
 
 server :: Server API
--- server :: Params -> Handler (Strategy Double)
 server Params{..} = do
-  let resultM = optimalStrategy paramIncome paramCost paramIterations
-  case resultM of
-    Nothing       -> throwError err412
-    (Just result) -> pure (Result result)
+  maybe (throwError err412) (pure . Result)
+    (optimalStrategy paramAwards paramDevaluationRate)

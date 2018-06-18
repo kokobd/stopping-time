@@ -12,7 +12,6 @@ module Zelinf.StoppingTime.API.Simulation
 
 import           Data.Aeson                        hiding (Result)
 import           Data.Aeson.Types                  (fieldLabelModifier)
-import           Data.Vector                       (Vector)
 import           GHC.Generics                      (Generic)
 import           Servant.API
 import           Servant.Docs                      (ToSample, singleSample,
@@ -21,15 +20,15 @@ import           Zelinf.StoppingTime.Internal.Util (removeFirstWordCamelCase)
 
 type API = "simulation" :> ReqBody '[JSON] Params :> Post '[JSON] Result
 
-data Params = Params
-  { paramIncome :: Vector Double
-  , paramCost   :: Vector Double
-  , paramStop   :: Vector Bool
-  , paramCount  :: Int
-  } deriving Generic
-
 newtype Result = Result Double
   deriving (ToJSON, FromJSON)
+
+data Params = Params
+  { paramAwards          :: [(Double, Double)]
+  , paramDevaluationRate :: Double
+  , paramStopValue       :: Double
+  , paramCount           :: Int
+  } deriving Generic
 
 instance FromJSON Params where
   parseJSON = genericParseJSON defaultOptions {
@@ -40,11 +39,9 @@ instance ToJSON Params where
       fieldLabelModifier = removeFirstWordCamelCase }
 
 instance ToSample Params where
-  toSamples _ = singleSample params
-    where params = Params [1, 2, 3, 4, 5, 0]
-                          [1, 1, 1, 1, 1, 1]
-                          [False, True, True, True, True, True]
-                          2
+  toSamples _ = singleSample $ Params
+    [(1, 0.2), (2, 0.3), (4, 0.2)] 1.0 15.0 10000
 
 instance ToSample Result where
-  toSamples _ = singleSample (Result 1.52)
+  toSamples _ = singleSample $ Result
+    4.5

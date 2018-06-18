@@ -14,7 +14,6 @@ module Zelinf.StoppingTime.API.OptimalStrategy
 
 import           Data.Aeson                        hiding (Result)
 import           Data.Aeson.Types                  (fieldLabelModifier)
-import           Data.Vector                       (Vector)
 import           GHC.Generics
 import           Servant.API
 import           Servant.Docs                      (ToSample, singleSample,
@@ -25,12 +24,11 @@ type API = "optimal-strategy"
          :> ReqBody '[JSON] Params :> Post '[JSON] Result
 
 data Params = Params
-  { paramIncome     :: Vector Double
-  , paramCost       :: Vector Double
-  , paramIterations :: Int
+  { paramAwards          :: [(Double, Double)]
+  , paramDevaluationRate :: Double
   } deriving Generic
 
-newtype Result = Result (Vector Bool)
+newtype Result = Result Double
   deriving (ToJSON, FromJSON)
 
 instance FromJSON Params where
@@ -42,7 +40,9 @@ instance ToJSON Params where
       fieldLabelModifier = removeFirstWordCamelCase }
 
 instance ToSample Params where
-  toSamples _ = singleSample (Params [1, 2, 3, 4, 5, 0] [1, 1, 1, 1, 1, 1] 10)
+  toSamples _ = singleSample $ Params
+    [(1, 0.2), (2, 0.3), (4, 0.2)] 1.0
 
 instance ToSample Result where
-  toSamples _ = singleSample $ Result [False, True, True, True, True, True]
+  toSamples _ = singleSample $ Result
+    2.3

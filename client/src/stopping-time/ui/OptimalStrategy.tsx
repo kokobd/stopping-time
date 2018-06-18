@@ -29,22 +29,19 @@ export default class OptimalStrategy extends React.Component<OptimalStrategyProp
 
   public render(): React.ReactNode {
     return (
-      <Button variant="outlined" color="primary" fullWidth>
+      <Button variant="outlined" color="primary" fullWidth
+        onClick={this.handleCalculate} >
         Calculate Optimal Strategy
       </Button>
     );
   }
 
-  private handleIterationsChange(event: React.ChangeEvent<HTMLInputElement>) {
-    this.setState({ iterations: Number(event.target.value) });
-  }
-
   private handleCalculate(event: any) {
     const reqBody =
-      {
-        awards: this.props.awards.map(x => [x.value, x.probability]),
-        devaluationRate: this.props.devaluationRate
-      };
+    {
+      awards: this.props.awards.map(x => [x.value, x.probability]),
+      devaluationRate: this.props.devaluationRate
+    };
     const onError = this.props.onError!;
     const onWaiting = this.props.onWaiting!;
     onWaiting();

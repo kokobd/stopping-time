@@ -1,58 +1,55 @@
-{-# LANGUAGE MultiWayIf      #-}
-{-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE MultiWayIf          #-}
+{-# LANGUAGE RecordWildCards     #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module Zelinf.StoppingTime.Core.Simulation
   ( averageProfit
   , simulateOnce
+  , Params(..)
+  , safeHead
   ) where
 
 import           Control.Monad.Random.Class
-import           Control.Monad.Reader
-import           Data.List                         (span)
-import           Data.Vector                       (Vector)
-import qualified Data.Vector                       as Vector
-import           Zelinf.StoppingTime.Internal.Util (foldableToVector)
+import           Control.Monad.State.Strict
+import           Data.List                  (scanl')
 
-averageProfit :: (Eq a, Fractional a, Foldable t, Integral i, MonadRandom m)
-              => t a -- ^f, the income vector
-              -> t a -- ^g, the cost vector
-              -> t Bool -- ^the stopping set of choice
-              -> i -- ^simulation times
-              -> m (Maybe a) -- ^average profit
-averageProfit f g s n =
-  let f' = foldableToVector f
-      g' = foldableToVector g
-      s' = foldableToVector s
-      n' = fromIntegral n
-   in if | length f' /= length g' || length f' /= length s' || length f' == 0 ->
-           pure Nothing
-         | n' <= 0 -> pure Nothing
-         | otherwise ->
-           Just <$> runReaderT (averageProfit' n')
-             (Input f' g' s')
-
-data Input a = Input
-  { inputIncome :: Vector a
-  , inputCost   :: Vector a
-  , inputStop   :: Vector Bool
-  }
-
-averageProfit' :: (Eq a, Fractional a, MonadRandom m)
-               => Int
-               -> ReaderT (Input a) m a
-averageProfit' n = fmap average (sequenceA $ take n (repeat simulateOnce))
+averageProfit :: MonadRandom m
+              => Params
+              -> Int -- ^count
+              -> m Double
+averageProfit params n =
+  fmap average . sequenceA . take n . repeat $ (simulateOnce params)
   where average xs = sum xs / fromIntegral n
 
-simulateOnce :: (Eq a, Fractional a, MonadRandom m)
-             => ReaderT (Input a) m a
-simulateOnce = do
-  Input{..} <- ask
-  let n = length inputIncome
-  randomIndexes <- getRandomRs (0, n - 1)
-  let (xs', y':_) = span (shouldStop inputIncome inputStop) randomIndexes
-  let indexes = take 10000 $ xs' ++ [y']
-  let totalIncome = if inputIncome Vector.! y' == 0 then 0 else sum (fmap (inputIncome Vector.!) indexes)
-  let totalCost = sum (fmap (inputCost Vector.!) indexes)
-  pure $ totalIncome - totalCost
-  where
-  shouldStop income stop i = not (stop Vector.! i) && (income Vector.! i /= 0)
+data Params = Params
+  { awards          :: [(Double, Double)]
+  , devaluationRate :: Double
+  , stopValue       :: Double
+  }
+
+simulateOnce :: MonadRandom m
+             => Params
+             -> m Double
+simulateOnce params = execStateT (simulateOnce' params) 0
+
+simulateOnce' :: MonadRandom m
+              => Params
+              -> StateT Double m ()
+simulateOnce' Params{..} = do
+  s <- get
+  if s >= stopValue
+    then pure ()
+    else do
+      (x :: Double) <- getRandomR (0, 1)
+      let index = fmap fst . safeHead
+               . dropWhile (\(_, p) -> p < x) . zip [0..] . drop 1
+               . scanl' (+) 0 . fmap snd $ awards
+      case index of
+        Nothing  -> put 0
+        (Just i) -> do
+          modify (\s' -> s' * devaluationRate + fst (awards !! i))
+          simulateOnce' $ Params awards devaluationRate stopValue
+
+safeHead :: [a] -> Maybe a
+safeHead []    = Nothing
+safeHead (x:_) = Just x

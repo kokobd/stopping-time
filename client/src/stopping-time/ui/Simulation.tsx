@@ -15,7 +15,7 @@ export interface SimulationProps {
 
   onError?: (message: string) => void;
   onWaiting?: () => void;
-  onFinish?: (averageProfit: number) => void;
+  onFinish?: () => void;
 }
 
 export interface SimulationState {
@@ -42,6 +42,7 @@ export default class Simulation extends React.Component<SimulationProps, Simulat
             <Button
               color="primary"
               variant="outlined"
+              fullWidth
               onClick={this.handleRunSimulation}
             >Run Simulation</Button>
           </div>
@@ -82,20 +83,22 @@ export default class Simulation extends React.Component<SimulationProps, Simulat
   public static defaultProps: Partial<SimulationProps> =
     {
       onError: () => { },
-      onWaiting: () => { }
+      onWaiting: () => { },
+      onFinish: () => { }
     }
 
   private handleRunSimulation(event: React.MouseEvent<HTMLElement>) {
     const reqBody =
-      {
-        awards: this.props.awards.map(x => [x.value, x.probability]),
-        devaluationRate: this.props.devaluationRate,
-        stopValue: this.state.stopValue,
-        count: this.state.count
-      };
+    {
+      awards: this.props.awards.map(x => [x.value, x.probability]),
+      devaluationRate: this.props.devaluationRate,
+      stopValue: this.state.stopValue,
+      count: this.state.count
+    };
     const onSuccess = (response: any) => {
       if (typeof response === "number") {
         this.onSimulationFinish(response);
+        this.props.onFinish!();
       } else {
         this.props.onError!("Ill-formatted response");
       }
@@ -117,6 +120,7 @@ export default class Simulation extends React.Component<SimulationProps, Simulat
 
   private handleCalculationFinish(stopValue: number) {
     this.setState({ stopValue });
+    this.props.onFinish!();
   }
 
   private handleStopValueChange(event: React.ChangeEvent<HTMLInputElement>) {
