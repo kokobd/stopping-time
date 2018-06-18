@@ -1,19 +1,6 @@
 # stopping-time
 
-This web app demostrates a specific case of optimal stopping problem.
-
-Suppose there are n cards, you can randomly select ONE card from
-those cards each turn, and put it back before the next turn.
-Each card has a value. You should find a set, so that when we stop
-at its elements, we can get maximum average profit.
-In other words, each time we get a card, we check whether it's
-in the set. If it's in, we stop now. Otherwise, we continue to
-the next turn.
-
-For example, If the values are `[1, 2, 3, 4, 5, 0]`, with a cost
-`[1, 1, 1, 1, 1, 1]`, we should stop at `[2, 3, 4, 5, 0]`. Note
-that `0` in values means whenever we get this card, we lose all
-previos profit and must quit now.
+This web app demostrates a specific case of the optimal stopping problem.
 
 ## Build and Run
 
