@@ -42,16 +42,16 @@ export default class AwardTable extends React.Component<AwardTableProps, AwardTa
 
   public render(): React.ReactNode {
     const paperStyle: React.CSSProperties =
-      {
-        paddingLeft: "1.5em",
-        paddingRight: "1.5em",
-        paddingBottom: "1.5em"
-      }
+    {
+      paddingLeft: "1.5em",
+      paddingRight: "1.5em",
+      paddingBottom: "1.5em"
+    }
     const headerCellStyle: React.CSSProperties =
-      {
-        padding: "2em",
-        textAlign: "right"
-      };
+    {
+      padding: "2em",
+      textAlign: "right"
+    };
     return (
       <Paper style={paperStyle}>
         <Toolbar style={{ display: "flex", paddingLeft: 0, paddingRight: 0 }}>
@@ -108,7 +108,9 @@ export default class AwardTable extends React.Component<AwardTableProps, AwardTa
             }
           </TableBody>
         </Table>
-        <Button fullWidth variant="outlined" onClick={this.handleRowAdd}>Add Entry</Button>
+        <Button fullWidth variant="outlined" onClick={this.handleRowAdd}
+          disabled={this.props.awards.length > 100}
+        >Add Entry</Button>
       </Paper>
     );
   }

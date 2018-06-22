@@ -47,9 +47,17 @@ export default class Simulation extends React.Component<SimulationProps, Simulat
             >Run Simulation</Button>
           </div>
           <div style={Simulation.innerStyle}>
-            <TextField label="Number of simulations" type="number"
+            <TextField label="Count of simulations" type="number"
               onChange={this.handleCountChange}
               value={this.state.count}
+              InputProps={{
+                inputProps:
+                {
+                  step: 1,
+                  min: 1,
+                  max: 100000
+                }
+              }}
               fullWidth
             />
           </div>

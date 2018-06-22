@@ -15,9 +15,12 @@ import qualified Zelinf.StoppingTime.Core.Simulation as Core
 
 server :: Server API
 server (API.Params awards dr sv count) = do
-  result <- liftIO $ Core.averageProfit (Core.Params
-      awards
-      dr
-      sv
-      ) count
-  pure . API.Result $ result
+  if length awards > 100 || count > 100000
+    then throwError err412
+    else do
+      result <- liftIO $ Core.averageProfit (Core.Params
+          awards
+          dr
+          sv
+          ) count
+      pure . API.Result $ result

@@ -14,5 +14,8 @@ import           Zelinf.StoppingTime.Core.OptimalStrategy
 
 server :: Server API
 server Params{..} = do
-  maybe (throwError err412) (pure . Result)
-    (optimalStrategy paramAwards paramDevaluationRate)
+  if length paramAwards > 100
+    then throwError err412
+    else
+      maybe (throwError err412) (pure . Result)
+        (optimalStrategy paramAwards paramDevaluationRate)
