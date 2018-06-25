@@ -1,12 +1,11 @@
 import * as React from "react";
 
 import AwardModel from "stopping-time/model/Award";
-import Award from "stopping-time/ui/Award";
 import AwardTable from "stopping-time/ui/AwardTable";
 import Simulation from "stopping-time/ui/Simulation";
-import OptimalStrategy from "stopping-time/ui/OptimalStrategy";
 import Dialog from "@material-ui/core/Dialog";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import ErrorDialog from "stopping-time/ui/ErrorDialog";
 
 import fixThis from "stopping-time/model/FixThis";
 
@@ -15,6 +14,8 @@ interface State {
   devaluationRate: number;
 
   waiting: boolean;
+
+  errorDialogOpen: boolean;
 }
 
 export default class Main extends React.Component<{}, State> {
@@ -28,7 +29,8 @@ export default class Main extends React.Component<{}, State> {
           new AwardModel()
         ],
         devaluationRate: 1,
-        waiting: false
+        waiting: false,
+        errorDialogOpen: false
       };
   }
 
@@ -72,6 +74,10 @@ export default class Main extends React.Component<{}, State> {
           <CircularProgress size={120} />
         </div>
       </Dialog>
+      <ErrorDialog
+        open={this.state.errorDialogOpen}
+        onClose={() => { this.setState({ errorDialogOpen: false }) }}
+      />
     </>);
   }
 
@@ -80,7 +86,6 @@ export default class Main extends React.Component<{}, State> {
   }
 
   private handleSimulationError(message: string) {
-    console.log("Error: " + message);
-    this.setState({ waiting: false });
+    this.setState({ errorDialogOpen: true, waiting: false });
   }
 }

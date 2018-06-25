@@ -55,7 +55,7 @@ export default class Simulation extends React.Component<SimulationProps, Simulat
                 {
                   step: 1,
                   min: 1,
-                  max: 100000
+                  max: 1000000
                 }
               }}
               fullWidth
